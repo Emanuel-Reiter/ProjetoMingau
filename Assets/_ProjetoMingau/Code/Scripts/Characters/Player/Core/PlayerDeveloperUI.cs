@@ -12,8 +12,7 @@ public class PlayerDeveloperUI : MonoBehaviour
     private float[] _frameDeltaTimeArray;
     private int _framerate;
 
-    private bool _isCursorLocked = false;
-    public bool IsCursorLocked => _isCursorLocked;
+
 
     [Header("Params")]
     [SerializeField] private bool _showFPS = true;
@@ -31,28 +30,11 @@ public class PlayerDeveloperUI : MonoBehaviour
         _dependencies = GetComponent<PlayerDependencies>();
         _stateManager = GetComponent<PlayerStateManager>();
         _locomotion = GetComponent<PlayerLocomotion>();
-
-        ToggleCursorLock();
     }
 
     private void Update()
     {
         DisplayFrametate();
-    }
-
-    private void ToggleCursorLock()
-    {
-        if (!_isCursorLocked)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        _isCursorLocked = !_isCursorLocked;
     }
 
     private void DisplayFrametate()

@@ -1,11 +1,18 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class PortalInteractable : BaseInteractable
+public class PortalInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private LevelData _targetLevel;
 
-    public async override void Interact()
+    private bool _hasBeenInteracted = false;
+    public bool HasBeenInteracted
+    {
+        get => _hasBeenInteracted;
+        set {  _hasBeenInteracted = value; }
+    }
+
+    public async void Interact()
     {
         if (HasBeenInteracted) return;
         await TriggerLevelLoad();
@@ -14,7 +21,17 @@ public class PortalInteractable : BaseInteractable
     private async Task TriggerLevelLoad()
     {
         if (LevelManager.I.IsLevelLoading) return;
-        SetHasBeenInteracted(true);
-        await LevelManager.I.LoadLevel(_targetLevel);
+
+        if (LevelManager.I.CurrentLoadedLevel.IsGameStage)
+        {
+            LevelProgressManager.I.EndLevel();
+            LevelProgressManager.I.SetNextLevel(_targetLevel);
+        }
+        else
+        {
+            await LevelManager.I.LoadLevel(_targetLevel);
+        }
+
+        HasBeenInteracted = true;
     }
 }

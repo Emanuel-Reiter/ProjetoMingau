@@ -34,6 +34,8 @@ public class PlayerInteract : MonoBehaviour
 
     private void SearchInteractables()
     {
+        InteractionAvailable = false;
+
         Vector3 origin = transform.position + (Vector3.up * _interactionRange);
         Vector3 direction = Vector3.zero;
 
@@ -41,7 +43,7 @@ public class PlayerInteract : MonoBehaviour
 
         if (objectsInRange.Length > 0)
         {
-            BaseInteractable interactable = objectsInRange[0].GetComponent<BaseInteractable>();
+            IInteractable interactable = objectsInRange[0].GetComponent<IInteractable>();
 
             if (interactable == null) return;
             if (interactable.HasBeenInteracted) return;

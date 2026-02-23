@@ -52,6 +52,24 @@ public class PlayerInputManager : MonoBehaviour
         ProcessCameraDirectionInput();
     }
 
+    private void Start()
+    {
+        UIManager.OnMenuChanged += ToogleInputRead;
+    }
+
+    private void OnDisable()
+    {
+        UIManager.OnMenuChanged -= ToogleInputRead;
+    }
+
+    private void ToogleInputRead(bool onMenu)
+    {
+        GameContext.I.TooggleCinemachineInput(!onMenu);
+
+        if (onMenu) _playerInputActions.Disable();
+        else _playerInputActions.Enable();
+    }
+
     private void SubscribeToAllActions()
     {
         // Jump
