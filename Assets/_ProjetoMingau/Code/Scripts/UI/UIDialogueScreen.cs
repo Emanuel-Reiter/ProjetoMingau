@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class UIDialogueScreen : UIBase
 
         UIManager.ToggleCursor(true);
 
-        Toggle(true);
+        Transition(true);
         LoadDialogue();
     }
 
@@ -130,12 +131,29 @@ public class UIDialogueScreen : UIBase
     {
         _daialogueCallback?.Invoke();
         UIManager.ToggleCursor(false);
-        Toggle(false);
+        Transition(false);
     }
 
     public override void Initialize()
     {
 
+    }
+
+    public override void Transition(bool toggle)
+    {
+        float endValue = toggle ? 1f : 0f;
+        float startValue = toggle ? 0f : 1f;
+        float transitionTime = 0.33f;
+
+        _dialogueCanvas.alpha = startValue;
+        if (!_dialogueCanvas.gameObject.activeSelf) Toggle(true);
+
+        _dialogueCanvas.DOFade(endValue, transitionTime)
+            .OnComplete(() =>
+            {
+                Toggle(toggle);
+                _dialogueCanvas.alpha = endValue;
+            });
     }
 
     public override void Toggle(bool toggle)

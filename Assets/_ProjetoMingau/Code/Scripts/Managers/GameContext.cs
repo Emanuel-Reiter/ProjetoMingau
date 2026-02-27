@@ -15,6 +15,7 @@ public class GameContext : Singleton<GameContext>
     public PlayerInteract PlayerInteract { get; private set; }
     public PlayerActionCombo PlayerCombo { get; private set; }
     public PlayerSimpleInventory PlayerInventory { get; private set; }
+    public AttributesManager PlayerAttributes { get; private set; }
 
 
     public void LoadPlayerRefs()
@@ -22,6 +23,7 @@ public class GameContext : Singleton<GameContext>
         PlayerInteract = PlayerRef.GetComponent<PlayerInteract>();
         PlayerCombo = PlayerRef.GetComponent<PlayerActionCombo>();
         PlayerInventory = PlayerRef.GetComponent<PlayerSimpleInventory>();
+        PlayerAttributes = PlayerRef.GetComponent<AttributesManager>();
     }
 
     public void TooggleCinemachineInput(bool toggle)
@@ -29,5 +31,13 @@ public class GameContext : Singleton<GameContext>
         CinemachineInputAxisController controller = CinemachineRef.GetComponent<CinemachineInputAxisController>();
 
         controller.enabled = toggle;
+    }
+
+    public void ResetCinemachineLookRotation()
+    {
+        CinemachineOrbitalFollow orbitalFollow = CinemachineRef.GetComponent<CinemachineOrbitalFollow>();
+
+        orbitalFollow.HorizontalAxis.Value = 0;
+        orbitalFollow.VerticalAxis.Value = 17.5f;
     }
 }

@@ -1846,7 +1846,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 1
-  _maxHP: 8
+  _maxHP: 7
   _enablePostureDamage: 0
   _maxPosture: 1
 --- !u!114 &3246938948783061766

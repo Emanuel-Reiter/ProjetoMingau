@@ -73,7 +73,7 @@ public class LevelProgressManager : Singleton<LevelProgressManager>
         LevelScore = (LevelScore * 10) + (LevelCollectables * 5);
 
         if (completeTime <= threeStarTime) LevelStars = 3;
-        else if (completeTime <= twoStarTime) LevelStars = 2;
+        else if (completeTime <= twoStarTime && completeTime > threeStarTime) LevelStars = 2;
         else LevelStars = 1;
 
         LevelComplete = true;

@@ -18,13 +18,14 @@ public class NPCHurt : MonoBehaviour
 
     private void OnDisable()
     {
+        if (_deps == null) return;
         _deps.Attributes.OnTakeDamage -= Hurt;
     }
 
     private void OnDestroy()
     {
+        if (_deps == null) return;
         _deps.Attributes.OnTakeDamage -= Hurt;
-
     }
 
     private void Hurt()

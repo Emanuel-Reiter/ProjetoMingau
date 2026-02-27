@@ -18,6 +18,23 @@ public class UICombo : UIBase
         GameContext.I.PlayerCombo.OnComboChange -= UpdateComboText;
     }
 
+    public override void Transition(bool toggle)
+    {
+        float endValue = toggle ? 1f : 0f;
+        float startValue = toggle ? 0f : 1f;
+        float transitionTime = 0.33f;
+
+        _comboCanvas.alpha = startValue;
+        if (!_comboCanvas.gameObject.activeSelf) Toggle(true);
+
+        _comboCanvas.DOFade(endValue, transitionTime)
+            .OnComplete(() =>
+            {
+                Toggle(toggle);
+                _comboCanvas.alpha = endValue;
+            });
+    }
+
     public override void Toggle(bool toggle)
     {
         _comboCanvas.gameObject.SetActive(toggle);
@@ -31,11 +48,11 @@ public class UICombo : UIBase
 
         if (comboIndex == 0)
         {
-            Toggle(false);
+            Transition(false);
             return;
         }
 
-        Toggle(true);
+        Transition(true);
 
         ResetUITransforms();
 

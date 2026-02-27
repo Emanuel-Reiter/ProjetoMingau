@@ -7,12 +7,13 @@ public class LevelManager : Singleton<LevelManager>
 {
     [Header("Level params")]
     [SerializeField] private LevelData _initialLevel;
-    
+    [SerializeField] private LevelData _mainMenuLevel;
+
     private LevelData _currentLoadedLevel;
     public LevelData CurrentLoadedLevel => _currentLoadedLevel;
-    
+
     [Header("Level Spwan params")]
-    [TagField] [SerializeField] private string _levelSpawnTag;
+    [TagField][SerializeField] private string _levelSpawnTag;
 
     // On level loading trigger
     public delegate void OnLevelLoadingDelegate(bool isLevelLoading);
@@ -47,13 +48,14 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
-    private int _playerAnimSyncTime = 1500;
+    private int _playerAnimSyncTime = 1000;
+    private int _finishLoadTime = 2000;
 
     public bool HasGameStarted { get; private set; } = false;
 
     public async Task InitalizeGame()
     {
-        if(_initialLevel == null)
+        if (_initialLevel == null)
         {
             Debug.LogError("Initial level not assinged.");
             return;
@@ -70,15 +72,15 @@ public class LevelManager : Singleton<LevelManager>
         await Task.Delay(_playerAnimSyncTime);
 
         UIManager.I.InitializeMenus();
-        
+
         LevelLoadPercent = 0f;
         IsLevelLoading = true;
-        
+
         try
         {
             await GameManager.I.InitializeGame();
         }
-        catch(InitializationException e)
+        catch (InitializationException e)
         {
             Debug.LogError($"Game initialization error. {e}");
             return;
@@ -101,14 +103,15 @@ public class LevelManager : Singleton<LevelManager>
         GameManager.I.MovePlayerToSpawn(GetSpawnPoint());
 
         LevelLoadPercent = 1f;
-        await Task.Delay(_playerAnimSyncTime);
+        await Task.Delay(_finishLoadTime);
 
         IsLevelLoading = false;
         HasGameStarted = true;
         LevelProgressManager.I.ResetProgress();
+        GameContext.I.PlayerAttributes.Heal(99999);
         GameManager.I.TogglePlayerMovement(true);
 
-        if(_initialLevel.LevelMusic == null)
+        if (_initialLevel.LevelMusic == null)
         {
             MusicManager.I.Stop();
         }
@@ -151,7 +154,7 @@ public class LevelManager : Singleton<LevelManager>
 
         await SceneManager.LoadSceneAsync(levelToLoad.SceneName, LoadSceneMode.Additive);
         _currentLoadedLevel = levelToLoad;
-        
+
         var loadedScene = SceneManager.GetSceneByName(_currentLoadedLevel.SceneName);
         SceneManager.SetActiveScene(loadedScene);
 
@@ -160,11 +163,13 @@ public class LevelManager : Singleton<LevelManager>
         GameManager.I.MovePlayerToSpawn(GetSpawnPoint());
 
         LevelLoadPercent = 1f;
-        await Task.Delay(_playerAnimSyncTime);
-        
+        await Task.Delay(_finishLoadTime);
+
         IsLevelLoading = false;
         HasGameStarted = true;
         LevelProgressManager.I.ResetProgress();
+        GameContext.I.PlayerAttributes.Heal(99999);
+        GameContext.I.ResetCinemachineLookRotation();
         GameManager.I.TogglePlayerMovement(true);
 
         if (levelToLoad.LevelMusic == null)

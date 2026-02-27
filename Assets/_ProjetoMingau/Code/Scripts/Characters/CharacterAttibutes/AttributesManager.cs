@@ -32,6 +32,8 @@ public class AttributesManager : MonoBehaviour
             if (value == _currentHP) return;
             _currentHP = Mathf.Clamp(value, 0, _maxHP);
 
+            OnHealthChange?.Invoke(CurrentHP);
+
             CheckIsAlive();
             DamagePosture();
         }
@@ -39,6 +41,10 @@ public class AttributesManager : MonoBehaviour
 
     public delegate void OnTakeDamageDelegate();
     public event OnTakeDamageDelegate OnTakeDamage;
+
+
+    public delegate void OnHealthChangeDelegate(int hp);
+    public event OnHealthChangeDelegate OnHealthChange;
 
 
     [Header("Posture params")]

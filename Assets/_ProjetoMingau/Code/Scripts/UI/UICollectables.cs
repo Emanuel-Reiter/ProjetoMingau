@@ -18,6 +18,23 @@ public class UICollectables : UIBase
         GameContext.I.PlayerInventory.OnCollectablesChanged -= UpdateCollectablesText;
     }
 
+    public override void Transition(bool toggle)
+    {
+        float endValue = toggle ? 1f : 0f;
+        float startValue = toggle ? 0f : 1f;
+        float transitionTime = 0.33f;
+
+        _collectablesCanvas.alpha = startValue;
+        if (!_collectablesCanvas.gameObject.activeSelf) Toggle(true);
+
+        _collectablesCanvas.DOFade(endValue, transitionTime)
+            .OnComplete(() =>
+            {
+                Toggle(toggle);
+                _collectablesCanvas.alpha = endValue;
+            });
+    }
+
     public override void Toggle(bool toggle)
     {
         _collectablesCanvas.gameObject.SetActive(toggle);

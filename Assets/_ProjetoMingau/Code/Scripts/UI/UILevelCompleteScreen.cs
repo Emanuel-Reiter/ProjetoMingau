@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
@@ -69,7 +70,7 @@ public class UILevelCompleteScreen : UIBase
             _star3.sprite = _starFullSprite;
         }
 
-        Toggle(true);
+        Transition(true);
         UIManager.ToggleCursor(true);
         //UIManager.TooglePause(true);
     }
@@ -83,10 +84,27 @@ public class UILevelCompleteScreen : UIBase
             Debug.LogError("No level progress manager nextLevel to load.");
         }
         
-        Toggle(false);
+        Transition(false);
         UIManager.ToggleCursor(false);
         UIManager.TooglePause(false);
         _ = LevelManager.I.LoadLevel(LevelProgressManager.I.NextLevel);
+    }
+
+    public override void Transition(bool toggle)
+    {
+        float endValue = toggle ? 1f : 0f;
+        float startValue = toggle ? 0f : 1f;
+        float transitionTime = 0.33f;
+
+        _levelCompletePanel.alpha = startValue;
+        if (!_levelCompletePanel.gameObject.activeSelf) Toggle(true);
+
+        _levelCompletePanel.DOFade(endValue, transitionTime)
+            .OnComplete(() =>
+            {
+                Toggle(toggle);
+                _levelCompletePanel.alpha = endValue;
+            });
     }
 
     public override void Toggle(bool toggle)

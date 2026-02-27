@@ -11,6 +11,7 @@ public class UIManager : Singleton<UIManager>
     private UICombo _comboHUD;
     private UICollectables _collectablesHUD;
     private UILevelTimer _levelTimerHUD;
+    private UIHelthBar _healthBarHUD;
 
     // Menus
     private UITitleScreen _titleScreenMenu;
@@ -19,6 +20,8 @@ public class UIManager : Singleton<UIManager>
 
     private UIDialogueScreen _dialogueScreen;
     public UIDialogueScreen DialogueScreen => _dialogueScreen;
+
+    private UISettingsScreen _settingsScreen;
 
 
     [Header("UI visual params")]
@@ -83,7 +86,7 @@ public class UIManager : Singleton<UIManager>
     {
         _interactionPrompt = FindFirstObjectByType<UIInteractionPrompt>();
         
-        if (CheckNull(_interactionPrompt)) return false;
+        if (CatchNull(_interactionPrompt)) return false;
         else return true;
     }
 
@@ -98,15 +101,17 @@ public class UIManager : Singleton<UIManager>
         _comboHUD.Initialize();
         _collectablesHUD.Initialize();
         _levelTimerHUD.Initialize();
+        _healthBarHUD.Initialize();
     }
 
     private bool LoadHUD()
     {
         _comboHUD = FindFirstObjectByType<UICombo>();
         _collectablesHUD = FindFirstObjectByType<UICollectables>();
-        _levelTimerHUD = FindAnyObjectByType<UILevelTimer>();
+        _levelTimerHUD = FindFirstObjectByType<UILevelTimer>();
+        _healthBarHUD = FindFirstObjectByType<UIHelthBar>();
 
-        if (CheckNull(_comboHUD, _collectablesHUD, _levelTimerHUD)) return false;
+        if (CatchNull(_comboHUD, _collectablesHUD, _levelTimerHUD, _healthBarHUD)) return false;
         else return true;
     }
 
@@ -122,20 +127,22 @@ public class UIManager : Singleton<UIManager>
         _loadingScreen.Initialize();
         _dialogueScreen.Initialize();
         _levelCompleteScreen.Initialize();
+        _settingsScreen.Initialize();
     }
 
     private bool LoadMenus()
     {
         _titleScreenMenu = FindFirstObjectByType<UITitleScreen>();
         _loadingScreen = FindFirstObjectByType<UILoadingScreen>();
-        _dialogueScreen = FindAnyObjectByType<UIDialogueScreen>();
-        _levelCompleteScreen = FindAnyObjectByType<UILevelCompleteScreen>();
+        _dialogueScreen = FindFirstObjectByType<UIDialogueScreen>();
+        _levelCompleteScreen = FindFirstObjectByType<UILevelCompleteScreen>();
+        _settingsScreen = FindFirstObjectByType<UISettingsScreen>();
 
-        if (CheckNull(_titleScreenMenu, _loadingScreen, _dialogueScreen, _levelCompleteScreen)) return false;
+        if (CatchNull(_titleScreenMenu, _loadingScreen, _dialogueScreen, _levelCompleteScreen, _settingsScreen)) return false;
         else return true;
     }
 
-    public static bool CheckNull(params Object[] objects)
+    public static bool CatchNull(params Object[] objects)
     {
         foreach (var obj in objects)
         {

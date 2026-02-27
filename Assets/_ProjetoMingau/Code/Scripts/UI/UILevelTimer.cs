@@ -1,6 +1,8 @@
+using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class UILevelTimer : UIBase
 {
@@ -29,12 +31,29 @@ public class UILevelTimer : UIBase
             Toggle(false);
             return;
         }
-
-        Toggle(true);
+        
+        if(!_timerCanvas.gameObject.activeSelf) Transition(true);
 
         TimeSpan t = TimeSpan.FromSeconds(time);
         string formattedTime = $"{t.Minutes}m {t.Seconds:D2}s";
         _timerText.text = formattedTime;
+    }
+
+    public override void Transition(bool toggle)
+    {
+        float endValue = toggle ? 1f : 0f;
+        float startValue = toggle ? 0f : 1f;
+        float transitionTime = 0.33f;
+
+        _timerCanvas.alpha = startValue;
+        if (!_timerCanvas.gameObject.activeSelf) Toggle(true);
+
+        _timerCanvas.DOFade(endValue, transitionTime)
+            .OnComplete(() =>
+            {
+                Toggle(toggle);
+                _timerCanvas.alpha = endValue;
+            });
     }
 
     public override void Toggle(bool toggle)
